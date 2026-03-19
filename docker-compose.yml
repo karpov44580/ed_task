@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    container_name: effective-mobile-app
+    networks:
+      - internal-network
+    expose:
+      - 8080
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8080"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  nginx:
+    depends_on:
+      - backend
+    build: ./nginx
+    container_name: effective-nginx-proxy
+    ports:
+      - "80:80"
+    networks:
+      - internal-network
+
+networks:
+  internal-network:
+    name: effective_network
